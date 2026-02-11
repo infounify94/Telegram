@@ -1,0 +1,111 @@
+{
+  "strategy": "Professional ORB Options Engine",
+  "philosophy": "Quality over Quantity - High-Probability Premium Expansion Only",
+  "configuration": {
+    "candle_body_min_pct": 60,
+    "candle_range_vs_orb": 0.35,
+    "volume_surge_multiplier": 1.8,
+    "pdh_pdl_distance": 0.25,
+    "fresh_move_window_minutes": 90,
+    "overtrading_distance": 0.15,
+    "open_location_threshold": 0.2,
+    "cutoff_time_hour": 12,
+    "cutoff_time_minute": 30,
+    "max_vix": 20,
+    "min_orb_range_nifty": 50,
+    "min_orb_range_banknifty": 100,
+    "premium_target": 30,
+    "premium_stoploss": 35,
+    "max_trades_per_day": 10,
+    "cooldown_candles": 2
+  },
+  "live_signals": {
+    "nifty": {
+      "index": "NIFTY",
+      "status": "NO_SIGNALS",
+      "total_signals": 0,
+      "quality_level": "HIGH_PROBABILITY_ONLY",
+      "current_price": 25914.25,
+      "expiry": "12-Feb-2026",
+      "opening_range": {
+        "high": 26000.65,
+        "low": 25923.7,
+        "size": 76.95,
+        "open_bias": "PUT",
+        "bias_reason": "Market opened near ORB high - prefer PUT signals first"
+      },
+      "market_context": {
+        "vix": 11.45,
+        "vix_safe": true,
+        "orb_range_adequate": true,
+        "previous_day": {
+          "high": 25989.45,
+          "low": 25870.45,
+          "close": 25935.15,
+          "value_area_high": 25971.6,
+          "value_area_low": 25888.3
+        }
+      },
+      "signals": [],
+      "timestamp": {
+        "local": "2026-02-11 13:06:24",
+        "local_tz": "IST"
+      },
+      "message": "No high-quality breakout signals yet"
+    },
+    "banknifty": {
+      "index": "BANKNIFTY",
+      "status": "NO_SIGNALS",
+      "total_signals": 0,
+      "quality_level": "HIGH_PROBABILITY_ONLY",
+      "current_price": 60647.8,
+      "expiry": "12-Feb-2026",
+      "opening_range": {
+        "high": 60716.6,
+        "low": 60447.9,
+        "size": 268.7,
+        "open_bias": "PUT",
+        "bias_reason": "Market opened near ORB high - prefer PUT signals first"
+      },
+      "market_context": {
+        "vix": 11.45,
+        "vix_safe": true,
+        "orb_range_adequate": true,
+        "previous_day": {
+          "high": 60797.55,
+          "low": 60531.55,
+          "close": 60626.4,
+          "value_area_high": 60757.65,
+          "value_area_low": 60571.45
+        }
+      },
+      "signals": [],
+      "timestamp": {
+        "local": "2026-02-11 13:06:24",
+        "local_tz": "IST"
+      },
+      "message": "No high-quality breakout signals yet"
+    }
+  },
+  "generated_at": "2026-02-11 13:06:24 IST",
+  "trading_rules": [
+    "Rule 1: Only strong breakout candles (60%+ body, volume surge, ATR expansion)",
+    "Rule 2: Avoid resistance/support traps (25%+ distance from PDH/PDL)",
+    "Rule 3: Trade fresh moves only (within 90 min of ORB)",
+    "Rule 4: No overtrading (15%+ minimum between entries)",
+    "Rule 5: Respect open location bias for better probability",
+    "Rule 6: ITM strikes only (better delta, less theta decay)",
+    "Rule 7: VIX < 20, adequate ORB range required",
+    "Rule 8: No new trades after 12:30 PM",
+    "Rule 9: Premium targets: +30% target, -35% stop",
+    "Rule 10: Force exit all positions by 3:15 PM"
+  ],
+  "critical_notes": [
+    "This is a PREMIUM EXPANSION strategy, not spot breakout",
+    "Filters reduce signals from 20-30 to 4-10 per day - this is GOOD",
+    "Every signal is high-probability, not random noise",
+    "ITM strikes have better delta and less theta decay",
+    "Paper trade for 2 weeks minimum before going live"
+  ],
+  "disclaimer": "Educational only. Not financial advice. Trade at your own risk."
+}
