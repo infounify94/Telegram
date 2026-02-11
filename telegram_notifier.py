@@ -12,8 +12,8 @@ from datetime import datetime
 
 # ===================== CONFIGURATION =====================
 
-TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+TELEGRAM_BOT_TOKEN = os.environ.get("8480675236:AAEWnz2d1pdxvsbAPabLEM4CSYoCdgmT62s")
+TELEGRAM_CHAT_ID = os.environ.get("6275915337")
 
 # Emoji mappings
 EMOJI = {
