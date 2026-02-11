@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
 """
 Telegram ORB Signal Notifier
-Reads orb_analysis_multi_trade.json and posts beautiful formatted messages
+Reads orb_analysis_multi_trade.json and posts formatted messages
+Only sends new signals/status updates to avoid spam.
 """
 
 import json
 import os
 import sys
 import requests
-from datetime import datetime
 
-# ===================== CONFIGURATION =====================
+# ===================== CONFIG =====================
 
 TELEGRAM_BOT_TOKEN = os.environ.get("8480675236:AAEWnz2d1pdxvsbAPabLEM4CSYoCdgmT62s")
 TELEGRAM_CHAT_ID = os.environ.get("1003713165195")
 
-# Emoji mappings
+if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+    print("❌ ERROR: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set")
+    sys.exit(1)
+
 EMOJI = {
-    "CALL": "🟢📈",  # Green up arrow for calls
-    "PUT": "🔴📉",   # Red down arrow for puts
+    "CALL": "🟢📈",
+    "PUT": "🔴📉",
     "fire": "🔥",
     "target": "🎯",
     "stop": "🛑",
@@ -30,332 +33,139 @@ EMOJI = {
     "rocket": "🚀",
     "bell": "🔔",
     "clock": "🕐",
-    "calendar": "📅",
-    "trend_up": "📈",
-    "trend_down": "📉"
+    "calendar": "📅"
 }
+
+SENT_SIGNALS_FILE = ".sent_signals.json"
 
 # ===================== HELPER FUNCTIONS =====================
 
 def send_telegram_message(message, parse_mode="HTML"):
-    """Send message to Telegram channel/group"""
-    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-        print("ERROR: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set")
-        return False
-    
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-    
     payload = {
         "chat_id": TELEGRAM_CHAT_ID,
         "text": message,
         "parse_mode": parse_mode,
         "disable_web_page_preview": True
     }
-    
     try:
-        response = requests.post(url, json=payload, timeout=10)
-        if response.status_code == 200:
-            print(f"✅ Message sent successfully")
+        resp = requests.post(url, json=payload, timeout=10)
+        if resp.status_code == 200:
+            print("✅ Message sent")
             return True
         else:
-            print(f"❌ Failed to send message: {response.status_code}")
-            print(f"Response: {response.text}")
+            print(f"❌ Failed to send: {resp.status_code} {resp.text}")
             return False
     except Exception as e:
         print(f"❌ Error sending message: {e}")
         return False
 
 
-def format_premium(value):
-    """Format premium nicely"""
-    if value is None:
-        return "N/A"
-    return f"₹{value:,.2f}"
-
-
-def format_number(value):
-    """Format large numbers with commas"""
-    if value is None:
-        return "N/A"
-    return f"{value:,}"
-
-
-def calculate_potential_profit(entry, target, stoploss):
-    """Calculate potential profit and risk"""
-    if entry is None or target is None or stoploss is None:
-        return None, None
-    
-    profit = target - entry
-    risk = entry - stoploss
-    
-    return profit, risk
-
-
-def format_signal_message(signal, index_name):
-    """Format a single signal into beautiful Telegram message"""
-    
-    signal_type = signal.get('type', 'UNKNOWN')
-    emoji_signal = EMOJI.get(signal_type, "📊")
-    
-    # Header
-    msg = f"{EMOJI['bell']} <b>ORB BREAKOUT SIGNAL</b> {EMOJI['bell']}\n"
-    msg += f"━━━━━━━━━━━━━━━━━━━━━\n\n"
-    
-    # Index and signal type
-    msg += f"{emoji_signal} <b>{index_name} - {signal_type}</b>\n\n"
-    
-    # Option details
-    msg += f"{EMOJI['chart']} <b>Option:</b> <code>{signal.get('option_symbol', 'N/A')}</code>\n"
-    msg += f"{EMOJI['money']} <b>Strike:</b> {signal.get('strike', 'N/A')}\n"
-    msg += f"{EMOJI['clock']} <b>Time:</b> {signal.get('time', 'N/A')} IST\n"
-    msg += f"{EMOJI['calendar']} <b>Expiry:</b> {signal.get('expiry', 'N/A')}\n\n"
-    
-    # Entry and targets
-    entry = signal.get('premium_entry')
-    target = signal.get('target_premium')
-    stoploss = signal.get('stoploss_premium')
-    
-    msg += f"<b>💵 PREMIUM LEVELS:</b>\n"
-    msg += f"  • Entry: {format_premium(entry)}\n"
-    msg += f"  • {EMOJI['target']} Target: {format_premium(target)}\n"
-    msg += f"  • {EMOJI['stop']} Stoploss: {format_premium(stoploss)}\n\n"
-    
-    # Profit/Risk calculation
-    if entry and target and stoploss:
-        profit, risk = calculate_potential_profit(entry, target, stoploss)
-        if profit and risk:
-            reward_ratio = profit / risk if risk > 0 else 0
-            msg += f"<b>📊 RISK/REWARD:</b>\n"
-            msg += f"  • Potential Profit: {format_premium(profit)} ({signal.get('target_pct', 30)}%)\n"
-            msg += f"  • Potential Loss: {format_premium(risk)} ({signal.get('stoploss_pct', 35)}%)\n"
-            msg += f"  • R:R Ratio: 1:{reward_ratio:.2f}\n\n"
-    
-    # Market data
-    msg += f"<b>📈 MARKET DATA:</b>\n"
-    msg += f"  • Spot Price: ₹{signal.get('spot_price', 'N/A')}\n"
-    msg += f"  • OI: {format_number(signal.get('oi'))}\n"
-    msg += f"  • Volume: {format_number(signal.get('volume'))}\n\n"
-    
-    # Quality indicators
-    quality = signal.get('breakout_quality', {})
-    if quality:
-        msg += f"<b>✅ QUALITY CHECKS:</b>\n"
-        msg += f"  • Candle Body: {quality.get('candle_body_pct', 'N/A')}%\n"
-        msg += f"  • Volume Surge: {quality.get('volume_surge', 'N/A')}x\n"
-        msg += f"  • ATR: {'Expanding' if quality.get('atr_expanding') else 'N/A'}\n\n"
-    
-    # Context
-    context = signal.get('market_context', {})
-    if context:
-        msg += f"<b>🌍 MARKET CONTEXT:</b>\n"
-        msg += f"  • VIX: {context.get('vix', 'N/A')}\n"
-        msg += f"  • ORB Range: ₹{context.get('orb_range', 'N/A')}\n"
-        if context.get('open_bias'):
-            msg += f"  • Bias: {context.get('open_bias')}\n"
-    
-    msg += f"\n━━━━━━━━━━━━━━━━━━━━━\n"
-    msg += f"{EMOJI['warning']} <i>Educational only. Not financial advice.</i>"
-    
-    return msg
-
-
-def format_no_signal_message(index_data):
-    """Format 'no signal yet' status message"""
-    
-    index_name = index_data.get('index', 'UNKNOWN')
-    status = index_data.get('status', 'UNKNOWN')
-    
-    msg = f"{EMOJI['chart']} <b>ORB STATUS UPDATE — {index_name}</b>\n"
-    msg += f"━━━━━━━━━━━━━━━━━━━━━\n\n"
-    
-    # Timestamp
-    timestamp = index_data.get('timestamp', {})
-    time_str = timestamp.get('local', 'N/A')
-    msg += f"{EMOJI['clock']} <b>{time_str} IST</b>\n"
-    
-    # Current price
-    current_price = index_data.get('current_price', 'N/A')
-    msg += f"📍 <b>Spot:</b> ₹{current_price}\n\n"
-    
-    # Status message based on status code
-    if status == "WAITING":
-        msg += f"⏳ <b>Opening range forming...</b>\n"
-        msg += f"<i>Wait till 9:45 AM for ORB completion</i>\n\n"
-    elif status == "NO_SIGNALS":
-        msg += f"❌ <b>No valid breakout signals yet</b>\n\n"
-    elif status == "VIX_TOO_HIGH":
-        msg += f"{EMOJI['warning']} <b>VIX too high for options buying</b>\n\n"
-    elif status == "RANGE_TOO_NARROW":
-        msg += f"{EMOJI['warning']} <b>ORB range too narrow</b>\n"
-        msg += f"<i>Likely choppy day - waiting for clarity</i>\n\n"
-    else:
-        msg += f"❌ <b>No signals yet</b>\n\n"
-    
-    # ORB details
-    orb = index_data.get('opening_range', {})
-    if orb:
-        orb_low = orb.get('low', 'N/A')
-        orb_high = orb.get('high', 'N/A')
-        orb_size = orb.get('size', 'N/A')
-        
-        msg += f"<b>ORB Range:</b> {orb_low} - {orb_high}\n"
-        msg += f"<b>Size:</b> ₹{orb_size}\n"
-        
-        # Open bias if available
-        if orb.get('open_bias'):
-            msg += f"<b>Bias:</b> {orb.get('open_bias')}\n"
-    
-    # Market context
-    context = index_data.get('market_context', {})
-    if context:
-        vix = context.get('vix', 'N/A')
-        msg += f"<b>VIX:</b> {vix}\n"
-    
-    msg += f"\n━━━━━━━━━━━━━━━━━━━━━\n"
-    msg += f"⏳ <i>Waiting for high-probability setup...</i>"
-    
-    return msg
-
-
-def format_summary_message(data):
-    """Format summary message when no new signals"""
-    
-    msg = f"{EMOJI['chart']} <b>ORB ENGINE UPDATE</b> {EMOJI['chart']}\n"
-    msg += f"━━━━━━━━━━━━━━━━━━━━━\n\n"
-    
-    # Status
-    status = data.get('status', 'UNKNOWN')
-    msg += f"<b>Status:</b> {status}\n"
-    
-    # Timestamp
-    generated_at = data.get('generated_at', 'Unknown')
-    msg += f"<b>Updated:</b> {generated_at}\n\n"
-    
-    # Check both indices
-    nifty = data.get('live_signals', {}).get('nifty', {})
-    banknifty = data.get('live_signals', {}).get('banknifty', {})
-    
-    nifty_signals = len(nifty.get('signals', []))
-    banknifty_signals = len(banknifty.get('signals', []))
-    
-    total_signals = nifty_signals + banknifty_signals
-    
-    if total_signals == 0:
-        msg += f"{EMOJI['check']} <b>No signals yet</b>\n\n"
-        msg += f"<i>Waiting for high-quality breakout...</i>\n\n"
-        
-        # Show current prices
-        if 'current_price' in nifty:
-            msg += f"NIFTY: ₹{nifty['current_price']}\n"
-        if 'current_price' in banknifty:
-            msg += f"BANKNIFTY: ₹{banknifty['current_price']}\n"
-    else:
-        msg += f"{EMOJI['rocket']} <b>Active Signals: {total_signals}</b>\n\n"
-        msg += f"  • NIFTY: {nifty_signals} signal(s)\n"
-        msg += f"  • BANKNIFTY: {banknifty_signals} signal(s)\n"
-    
-    msg += f"\n━━━━━━━━━━━━━━━━━━━━━\n"
-    msg += f"<i>Next update in 5 minutes</i>"
-    
-    return msg
-
-
-def load_previous_signals():
-    """Load previously sent signals to avoid duplicates"""
-    sent_file = ".sent_signals.json"
-    if os.path.exists(sent_file):
+def load_sent_signals():
+    if os.path.exists(SENT_SIGNALS_FILE):
         try:
-            with open(sent_file, 'r') as f:
+            with open(SENT_SIGNALS_FILE, "r") as f:
                 return json.load(f)
         except:
             pass
-    return {"nifty": [], "banknifty": []}
+    return {"nifty": [], "banknifty": [], "nifty_status": [], "banknifty_status": []}
 
 
 def save_sent_signals(sent_signals):
-    """Save sent signals to avoid duplicates"""
-    sent_file = ".sent_signals.json"
-    with open(sent_file, 'w') as f:
+    with open(SENT_SIGNALS_FILE, "w") as f:
         json.dump(sent_signals, f, indent=2)
 
 
 def signal_hash(signal):
-    """Create unique hash for signal to detect duplicates"""
+    """Unique hash for a signal to avoid duplicates"""
     return f"{signal.get('time')}_{signal.get('type')}_{signal.get('strike')}"
+
+
+def format_signal_message(signal, index_name):
+    """Format a single ORB signal"""
+    signal_type = signal.get("type", "UNKNOWN")
+    emoji_signal = EMOJI.get(signal_type, "📊")
+
+    entry = signal.get("premium_entry", "N/A")
+    target = signal.get("target_premium", "N/A")
+    stoploss = signal.get("stoploss_premium", "N/A")
+
+    msg = f"{EMOJI['bell']} <b>ORB BREAKOUT SIGNAL — {index_name}</b> {EMOJI['bell']}\n"
+    msg += f"{emoji_signal} <b>{signal_type}</b>\n"
+    msg += f"{EMOJI['money']} <b>Strike:</b> {signal.get('strike', 'N/A')}\n"
+    msg += f"{EMOJI['clock']} <b>Time:</b> {signal.get('time', 'N/A')} IST\n"
+    msg += f"{EMOJI['calendar']} <b>Expiry:</b> {signal.get('expiry', 'N/A')}\n\n"
+    msg += f"<b>💵 PREMIUM LEVELS:</b>\n  • Entry: ₹{entry}\n  • {EMOJI['target']} Target: ₹{target}\n  • {EMOJI['stop']} Stoploss: ₹{stoploss}\n"
+    msg += f"\n━━━━━━━━━━━━━━━━━━━━━\n"
+    msg += f"{EMOJI['warning']} <i>Educational only. Not financial advice.</i>"
+
+    return msg
+
+
+def format_no_signal_message(index_data):
+    """Format status update when no signals"""
+    index_name = index_data.get("index", "UNKNOWN")
+    status = index_data.get("status", "NO_SIGNALS")
+    timestamp = index_data.get("timestamp", {}).get("local", "N/A")
+    current_price = index_data.get("current_price", "N/A")
+
+    msg = f"{EMOJI['chart']} <b>ORB STATUS UPDATE — {index_name}</b>\n"
+    msg += f"━━━━━━━━━━━━━━━━━━━━━\n"
+    msg += f"{EMOJI['clock']} <b>{timestamp} IST</b>\n"
+    msg += f"📍 <b>Spot:</b> ₹{current_price}\n"
+    if status == "NO_SIGNALS":
+        msg += f"❌ <b>No valid breakout signals yet</b>\n"
+    elif status == "WAITING":
+        msg += f"⏳ <b>Opening range forming...</b>\n"
+    else:
+        msg += f"{EMOJI['warning']} <b>Status:</b> {status}\n"
+    msg += f"\n━━━━━━━━━━━━━━━━━━━━━\n"
+    return msg
 
 
 # ===================== MAIN =====================
 
 def main():
-    # Load JSON file
     json_file = "orb_analysis_multi_trade.json"
-    
     if not os.path.exists(json_file):
-        print(f"ERROR: {json_file} not found")
+        print(f"❌ {json_file} not found")
         sys.exit(1)
-    
-    try:
-        with open(json_file, 'r') as f:
-            data = json.load(f)
-    except Exception as e:
-        print(f"ERROR: Failed to read JSON: {e}")
-        sys.exit(1)
-    
-    # Load previously sent signals/statuses
-    sent_signals = load_previous_signals()
-    
-    # Track if we sent anything this run
+
+    with open(json_file, "r") as f:
+        data = json.load(f)
+
+    sent_signals = load_sent_signals()
     messages_sent = 0
-    
-    # Process both NIFTY and BANKNIFTY
+
     for index_key in ["nifty", "banknifty"]:
-        index_data = data.get('live_signals', {}).get(index_key, {})
-        
+        index_data = data.get("live_signals", {}).get(index_key, {})
         if not index_data:
             continue
-        
-        signals = index_data.get('signals', [])
-        
+
+        signals = index_data.get("signals", [])
         if signals:
-            # Has signals - send each new one
+            # Send only new signals
             for signal in signals:
                 sig_hash = signal_hash(signal)
-                
                 if sig_hash not in sent_signals[index_key]:
-                    # New signal! Send it
-                    index_name = index_data.get('index', index_key.upper())
-                    msg = format_signal_message(signal, index_name)
-                    
+                    msg = format_signal_message(signal, index_data.get("index", index_key.upper()))
                     if send_telegram_message(msg):
                         sent_signals[index_key].append(sig_hash)
                         messages_sent += 1
-                        print(f"✅ Sent {index_name} {signal.get('type')} signal")
-        
         else:
-            # No signals - send status update
-            # Create a hash for the current status to avoid spam
-            status = index_data.get('status', 'NO_SIGNALS')
-            timestamp = index_data.get('timestamp', {}).get('local', '')
-            status_hash = f"status_{status}_{timestamp[:10]}"  # Date-based hash
-            
-            # Only send status update once per status per day
-            if status_hash not in sent_signals.get(f'{index_key}_status', []):
-                index_name = index_data.get('index', index_key.upper())
+            # Send one status update per day
+            status = index_data.get("status", "NO_SIGNALS")
+            timestamp = index_data.get("timestamp", {}).get("local", "")[:10]  # date only
+            status_hash = f"{status}_{timestamp}"
+            status_list_key = f"{index_key}_status"
+            if status_hash not in sent_signals.get(status_list_key, []):
                 msg = format_no_signal_message(index_data)
-                
                 if send_telegram_message(msg):
-                    # Track this status
-                    if f'{index_key}_status' not in sent_signals:
-                        sent_signals[f'{index_key}_status'] = []
-                    sent_signals[f'{index_key}_status'].append(status_hash)
+                    sent_signals.setdefault(status_list_key, []).append(status_hash)
                     messages_sent += 1
-                    print(f"✅ Sent {index_name} status update: {status}")
-    
-    # Save sent signals/statuses
+
     save_sent_signals(sent_signals)
-    
-    print(f"✅ Telegram notification check complete")
-    print(f"   Messages sent: {messages_sent}")
+    print(f"✅ Done. Messages sent: {messages_sent}")
 
 
 if __name__ == "__main__":
