@@ -13,7 +13,7 @@ import requests
 # ===================== CONFIG =====================
 
 TELEGRAM_BOT_TOKEN = os.environ.get("8480675236:AAEWnz2d1pdxvsbAPabLEM4CSYoCdgmT62s")
-TELEGRAM_CHAT_ID = os.environ.get("1003713165195")
+TELEGRAM_CHAT_ID = os.environ.get("-1003713165195")
 
 if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
     print("❌ ERROR: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set")
