@@ -2,8 +2,11 @@ name: ORB Analysis with Telegram Notifications
 
 on:
   schedule:
-    - cron: '*/5 3-10 * * 1-5'
-  workflow_dispatch:
+    # Run every 5 minutes during IST market hours (9:15 AM - 3:30 PM IST = 3:45 AM - 10:00 AM UTC)
+    - cron: '45,50,55 3 * * 1-5'   # 3:45 AM - 3:55 AM UTC
+    - cron: '*/5 4-9 * * 1-5'      # 4:00 AM - 9:55 AM UTC
+    - cron: '0 10 * * 1-5'         # 10:00 AM UTC
+  workflow_dispatch:  # Allow manual trigger
 
 jobs:
   analyze-and-notify:
@@ -38,10 +41,11 @@ jobs:
       # ✅ STEP 3 — Now send Telegram using latest data
       - name: Send Telegram Notifications
         env:
-          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python telegram_notifier.py
 
+      # ✅ STEP 4 — Upload JSON as artifact
       - name: Upload JSON as artifact
         uses: actions/upload-artifact@v4
         with:
