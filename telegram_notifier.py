@@ -159,6 +159,64 @@ def format_signal_message(signal, index_name):
     return msg
 
 
+def format_no_signal_message(index_data):
+    """Format 'no signal yet' status message"""
+    
+    index_name = index_data.get('index', 'UNKNOWN')
+    status = index_data.get('status', 'UNKNOWN')
+    
+    msg = f"{EMOJI['chart']} <b>ORB STATUS UPDATE — {index_name}</b>\n"
+    msg += f"━━━━━━━━━━━━━━━━━━━━━\n\n"
+    
+    # Timestamp
+    timestamp = index_data.get('timestamp', {})
+    time_str = timestamp.get('local', 'N/A')
+    msg += f"{EMOJI['clock']} <b>{time_str} IST</b>\n"
+    
+    # Current price
+    current_price = index_data.get('current_price', 'N/A')
+    msg += f"📍 <b>Spot:</b> ₹{current_price}\n\n"
+    
+    # Status message based on status code
+    if status == "WAITING":
+        msg += f"⏳ <b>Opening range forming...</b>\n"
+        msg += f"<i>Wait till 9:45 AM for ORB completion</i>\n\n"
+    elif status == "NO_SIGNALS":
+        msg += f"❌ <b>No valid breakout signals yet</b>\n\n"
+    elif status == "VIX_TOO_HIGH":
+        msg += f"{EMOJI['warning']} <b>VIX too high for options buying</b>\n\n"
+    elif status == "RANGE_TOO_NARROW":
+        msg += f"{EMOJI['warning']} <b>ORB range too narrow</b>\n"
+        msg += f"<i>Likely choppy day - waiting for clarity</i>\n\n"
+    else:
+        msg += f"❌ <b>No signals yet</b>\n\n"
+    
+    # ORB details
+    orb = index_data.get('opening_range', {})
+    if orb:
+        orb_low = orb.get('low', 'N/A')
+        orb_high = orb.get('high', 'N/A')
+        orb_size = orb.get('size', 'N/A')
+        
+        msg += f"<b>ORB Range:</b> {orb_low} - {orb_high}\n"
+        msg += f"<b>Size:</b> ₹{orb_size}\n"
+        
+        # Open bias if available
+        if orb.get('open_bias'):
+            msg += f"<b>Bias:</b> {orb.get('open_bias')}\n"
+    
+    # Market context
+    context = index_data.get('market_context', {})
+    if context:
+        vix = context.get('vix', 'N/A')
+        msg += f"<b>VIX:</b> {vix}\n"
+    
+    msg += f"\n━━━━━━━━━━━━━━━━━━━━━\n"
+    msg += f"⏳ <i>Waiting for high-probability setup...</i>"
+    
+    return msg
+
+
 def format_summary_message(data):
     """Format summary message when no new signals"""
     
@@ -243,55 +301,61 @@ def main():
         print(f"ERROR: Failed to read JSON: {e}")
         sys.exit(1)
     
-    # Load previously sent signals
+    # Load previously sent signals/statuses
     sent_signals = load_previous_signals()
     
-    # Check for new signals
-    new_signals_found = False
+    # Track if we sent anything this run
+    messages_sent = 0
     
-    # Process NIFTY signals
-    nifty = data.get('live_signals', {}).get('nifty', {})
-    nifty_signals = nifty.get('signals', [])
+    # Process both NIFTY and BANKNIFTY
+    for index_key in ["nifty", "banknifty"]:
+        index_data = data.get('live_signals', {}).get(index_key, {})
+        
+        if not index_data:
+            continue
+        
+        signals = index_data.get('signals', [])
+        
+        if signals:
+            # Has signals - send each new one
+            for signal in signals:
+                sig_hash = signal_hash(signal)
+                
+                if sig_hash not in sent_signals[index_key]:
+                    # New signal! Send it
+                    index_name = index_data.get('index', index_key.upper())
+                    msg = format_signal_message(signal, index_name)
+                    
+                    if send_telegram_message(msg):
+                        sent_signals[index_key].append(sig_hash)
+                        messages_sent += 1
+                        print(f"✅ Sent {index_name} {signal.get('type')} signal")
+        
+        else:
+            # No signals - send status update
+            # Create a hash for the current status to avoid spam
+            status = index_data.get('status', 'NO_SIGNALS')
+            timestamp = index_data.get('timestamp', {}).get('local', '')
+            status_hash = f"status_{status}_{timestamp[:10]}"  # Date-based hash
+            
+            # Only send status update once per status per day
+            if status_hash not in sent_signals.get(f'{index_key}_status', []):
+                index_name = index_data.get('index', index_key.upper())
+                msg = format_no_signal_message(index_data)
+                
+                if send_telegram_message(msg):
+                    # Track this status
+                    if f'{index_key}_status' not in sent_signals:
+                        sent_signals[f'{index_key}_status'] = []
+                    sent_signals[f'{index_key}_status'].append(status_hash)
+                    messages_sent += 1
+                    print(f"✅ Sent {index_name} status update: {status}")
     
-    for signal in nifty_signals:
-        sig_hash = signal_hash(signal)
-        if sig_hash not in sent_signals['nifty']:
-            # New signal! Send it
-            msg = format_signal_message(signal, "NIFTY")
-            if send_telegram_message(msg):
-                sent_signals['nifty'].append(sig_hash)
-                new_signals_found = True
-    
-    # Process BANKNIFTY signals
-    banknifty = data.get('live_signals', {}).get('banknifty', {})
-    banknifty_signals = banknifty.get('signals', [])
-    
-    for signal in banknifty_signals:
-        sig_hash = signal_hash(signal)
-        if sig_hash not in sent_signals['banknifty']:
-            # New signal! Send it
-            msg = format_signal_message(signal, "BANKNIFTY")
-            if send_telegram_message(msg):
-                sent_signals['banknifty'].append(sig_hash)
-                new_signals_found = True
-    
-    # Save sent signals
+    # Save sent signals/statuses
     save_sent_signals(sent_signals)
     
-    # If no new signals and this is first run of the day, send summary
-    # (Optional: can be configured to send every hour or at specific times)
-    if not new_signals_found:
-        # Check if we should send summary (e.g., at 9:45 AM IST)
-        current_hour = datetime.now().hour
-        current_minute = datetime.now().minute
-        
-        # Send summary at market open (9:45 AM) if no signals yet
-        if current_hour == 9 and current_minute >= 45 and current_minute < 50:
-            summary_msg = format_summary_message(data)
-            send_telegram_message(summary_msg)
-    
     print(f"✅ Telegram notification check complete")
-    print(f"   New signals sent: {new_signals_found}")
+    print(f"   Messages sent: {messages_sent}")
 
 
 if __name__ == "__main__":
