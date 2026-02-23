@@ -35,7 +35,7 @@
         "bias_reason": "Market opened mid-range - no directional bias"
       },
       "market_context": {
-        "vix": 14.23,
+        "vix": 14.24,
         "vix_safe": true,
         "orb_range_adequate": true,
         "previous_day": {
@@ -48,7 +48,7 @@
       },
       "signals": [],
       "timestamp": {
-        "local": "2026-02-23 13:09:31",
+        "local": "2026-02-23 13:09:57",
         "local_tz": "IST"
       },
       "message": "No high-quality breakout signals yet"
@@ -68,7 +68,7 @@
         "bias_reason": "Market opened near ORB low - prefer CALL signals first"
       },
       "market_context": {
-        "vix": 14.23,
+        "vix": 14.24,
         "vix_safe": true,
         "orb_range_adequate": true,
         "previous_day": {
@@ -81,13 +81,13 @@
       },
       "signals": [],
       "timestamp": {
-        "local": "2026-02-23 13:09:32",
+        "local": "2026-02-23 13:09:57",
         "local_tz": "IST"
       },
       "message": "No high-quality breakout signals yet"
     }
   },
-  "generated_at": "2026-02-23 13:09:32 IST",
+  "generated_at": "2026-02-23 13:09:57 IST",
   "trading_rules": [
     "Rule 1: Only strong breakout candles (60%+ body, volume surge, ATR expansion)",
     "Rule 2: Avoid resistance/support traps (25%+ distance from PDH/PDL)",
