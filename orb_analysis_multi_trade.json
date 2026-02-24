@@ -25,30 +25,30 @@
       "status": "NO_SIGNALS",
       "total_signals": 0,
       "quality_level": "HIGH_PROBABILITY_ONLY",
-      "current_price": 25717.3,
+      "current_price": 25458.4,
       "expiry": "26-Feb-2026",
       "opening_range": {
-        "high": 25770.7,
-        "low": 25627.15,
-        "size": 143.55,
-        "open_bias": null,
-        "bias_reason": "Market opened mid-range - no directional bias"
+        "high": 25641.8,
+        "low": 25483.6,
+        "size": 158.2,
+        "open_bias": "PUT",
+        "bias_reason": "Market opened near ORB high - prefer PUT signals first"
       },
       "market_context": {
-        "vix": 14.17,
+        "vix": 14.33,
         "vix_safe": true,
         "orb_range_adequate": true,
         "previous_day": {
-          "high": 25663.55,
-          "low": 25379.75,
-          "close": 25571.25,
-          "value_area_high": 25620.98,
-          "value_area_low": 25422.32
+          "high": 25771.45,
+          "low": 25609.35,
+          "close": 25713.0,
+          "value_area_high": 25747.13,
+          "value_area_low": 25633.66
         }
       },
       "signals": [],
       "timestamp": {
-        "local": "2026-02-23 17:26:17",
+        "local": "2026-02-24 12:12:32",
         "local_tz": "IST"
       },
       "message": "No high-quality breakout signals yet"
@@ -58,36 +58,36 @@
       "status": "NO_SIGNALS",
       "total_signals": 0,
       "quality_level": "HIGH_PROBABILITY_ONLY",
-      "current_price": 61289.5,
+      "current_price": 61228.4,
       "expiry": "26-Feb-2026",
       "opening_range": {
-        "high": 61516.2,
-        "low": 61071.85,
-        "size": 444.35,
-        "open_bias": "CALL",
-        "bias_reason": "Market opened near ORB low - prefer CALL signals first"
+        "high": 61337.1,
+        "low": 61129.6,
+        "size": 207.5,
+        "open_bias": null,
+        "bias_reason": "Market opened mid-range - no directional bias"
       },
       "market_context": {
-        "vix": 14.17,
+        "vix": 14.33,
         "vix_safe": true,
         "orb_range_adequate": true,
         "previous_day": {
-          "high": 61360.5,
-          "low": 60562.35,
-          "close": 61172.0,
-          "value_area_high": 61240.78,
-          "value_area_low": 60682.07
+          "high": 61517.8,
+          "low": 61029.15,
+          "close": 61264.25,
+          "value_area_high": 61444.5,
+          "value_area_low": 61102.45
         }
       },
       "signals": [],
       "timestamp": {
-        "local": "2026-02-23 17:26:18",
+        "local": "2026-02-24 12:12:33",
         "local_tz": "IST"
       },
       "message": "No high-quality breakout signals yet"
     }
   },
-  "generated_at": "2026-02-23 17:26:18 IST",
+  "generated_at": "2026-02-24 12:12:33 IST",
   "trading_rules": [
     "Rule 1: Only strong breakout candles (60%+ body, volume surge, ATR expansion)",
     "Rule 2: Avoid resistance/support traps (25%+ distance from PDH/PDL)",
