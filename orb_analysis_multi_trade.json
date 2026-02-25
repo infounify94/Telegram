@@ -25,7 +25,7 @@
       "status": "NO_SIGNALS",
       "total_signals": 0,
       "quality_level": "HIGH_PROBABILITY_ONLY",
-      "current_price": 25462.05,
+      "current_price": 25475.05,
       "expiry": "26-Feb-2026",
       "opening_range": {
         "high": 25594.9,
@@ -35,7 +35,7 @@
         "bias_reason": "Market opened near ORB low - prefer CALL signals first"
       },
       "market_context": {
-        "vix": 13.48,
+        "vix": 13.49,
         "vix_safe": true,
         "orb_range_adequate": true,
         "previous_day": {
@@ -48,7 +48,7 @@
       },
       "signals": [],
       "timestamp": {
-        "local": "2026-02-25 13:06:27",
+        "local": "2026-02-25 16:05:54",
         "local_tz": "IST"
       },
       "message": "No high-quality breakout signals yet"
@@ -58,7 +58,7 @@
       "status": "NO_SIGNALS",
       "total_signals": 0,
       "quality_level": "HIGH_PROBABILITY_ONLY",
-      "current_price": 60882.75,
+      "current_price": 61026.6,
       "expiry": "26-Feb-2026",
       "opening_range": {
         "high": 61317.1,
@@ -68,7 +68,7 @@
         "bias_reason": "Market opened near ORB low - prefer CALL signals first"
       },
       "market_context": {
-        "vix": 13.48,
+        "vix": 13.49,
         "vix_safe": true,
         "orb_range_adequate": true,
         "previous_day": {
@@ -81,13 +81,13 @@
       },
       "signals": [],
       "timestamp": {
-        "local": "2026-02-25 13:06:27",
+        "local": "2026-02-25 16:05:54",
         "local_tz": "IST"
       },
       "message": "No high-quality breakout signals yet"
     }
   },
-  "generated_at": "2026-02-25 13:06:27 IST",
+  "generated_at": "2026-02-25 16:05:54 IST",
   "trading_rules": [
     "Rule 1: Only strong breakout candles (60%+ body, volume surge, ATR expansion)",
     "Rule 2: Avoid resistance/support traps (25%+ distance from PDH/PDL)",
