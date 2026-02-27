@@ -48,7 +48,7 @@
       },
       "signals": [],
       "timestamp": {
-        "local": "2026-02-27 15:28:38",
+        "local": "2026-02-27 16:00:29",
         "local_tz": "IST"
       },
       "message": "No high-quality breakout signals yet"
@@ -81,13 +81,13 @@
       },
       "signals": [],
       "timestamp": {
-        "local": "2026-02-27 15:28:38",
+        "local": "2026-02-27 16:00:29",
         "local_tz": "IST"
       },
       "message": "No high-quality breakout signals yet"
     }
   },
-  "generated_at": "2026-02-27 15:28:38 IST",
+  "generated_at": "2026-02-27 16:00:29 IST",
   "trading_rules": [
     "Rule 1: Only strong breakout candles (60%+ body, volume surge, ATR expansion)",
     "Rule 2: Avoid resistance/support traps (25%+ distance from PDH/PDL)",
