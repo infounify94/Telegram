@@ -22,18 +22,72 @@
   "live_signals": {
     "nifty": {
       "index": "NIFTY",
-      "status": "VIX_TOO_HIGH",
-      "message": "India VIX at 21.14 - too high for options buying (need < 20)",
-      "signals": []
+      "status": "NO_SIGNALS",
+      "total_signals": 0,
+      "quality_level": "HIGH_PROBABILITY_ONLY",
+      "current_price": 24564.55,
+      "expiry": "12-Mar-2026",
+      "opening_range": {
+        "high": 24651.6,
+        "low": 24530.7,
+        "size": 120.9,
+        "open_bias": null,
+        "bias_reason": "Market opened mid-range - no directional bias"
+      },
+      "market_context": {
+        "vix": 19.21,
+        "vix_safe": true,
+        "orb_range_adequate": true,
+        "previous_day": {
+          "high": 24602.45,
+          "low": 24305.4,
+          "close": 24480.5,
+          "value_area_high": 24557.89,
+          "value_area_low": 24349.96
+        }
+      },
+      "signals": [],
+      "timestamp": {
+        "local": "2026-03-05 10:34:31",
+        "local_tz": "IST"
+      },
+      "message": "No high-quality breakout signals yet"
     },
     "banknifty": {
       "index": "BANKNIFTY",
-      "status": "VIX_TOO_HIGH",
-      "message": "India VIX at 21.14 - too high for options buying (need < 20)",
-      "signals": []
+      "status": "NO_SIGNALS",
+      "total_signals": 0,
+      "quality_level": "HIGH_PROBABILITY_ONLY",
+      "current_price": 58919.4,
+      "expiry": "12-Mar-2026",
+      "opening_range": {
+        "high": 59088.25,
+        "low": 58818.8,
+        "size": 269.45,
+        "open_bias": null,
+        "bias_reason": "Market opened mid-range - no directional bias"
+      },
+      "market_context": {
+        "vix": 19.21,
+        "vix_safe": true,
+        "orb_range_adequate": true,
+        "previous_day": {
+          "high": 59058.4,
+          "low": 58393.55,
+          "close": 58755.25,
+          "value_area_high": 58958.67,
+          "value_area_low": 58493.28
+        }
+      },
+      "signals": [],
+      "timestamp": {
+        "local": "2026-03-05 10:34:32",
+        "local_tz": "IST"
+      },
+      "message": "No high-quality breakout signals yet"
     }
   },
-  "generated_at": "2026-03-04 15:59:00 IST",
+  "generated_at": "2026-03-05 10:34:32 IST",
   "trading_rules": [
     "Rule 1: Only strong breakout candles (60%+ body, volume surge, ATR expansion)",
     "Rule 2: Avoid resistance/support traps (25%+ distance from PDH/PDL)",
