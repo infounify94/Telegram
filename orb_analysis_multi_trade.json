@@ -23,17 +23,17 @@
     "nifty": {
       "index": "NIFTY",
       "status": "VIX_TOO_HIGH",
-      "message": "India VIX at 25.14 - too high for options buying (need < 20)",
+      "message": "India VIX at 25.01 - too high for options buying (need < 20)",
       "signals": []
     },
     "banknifty": {
       "index": "BANKNIFTY",
       "status": "VIX_TOO_HIGH",
-      "message": "India VIX at 25.14 - too high for options buying (need < 20)",
+      "message": "India VIX at 25.01 - too high for options buying (need < 20)",
       "signals": []
     }
   },
-  "generated_at": "2026-04-01 13:50:29 IST",
+  "generated_at": "2026-04-01 15:09:55 IST",
   "trading_rules": [
     "Rule 1: Only strong breakout candles (60%+ body, volume surge, ATR expansion)",
     "Rule 2: Avoid resistance/support traps (25%+ distance from PDH/PDL)",
