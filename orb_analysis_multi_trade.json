@@ -25,7 +25,7 @@
       "status": "NO_SIGNALS",
       "total_signals": 0,
       "quality_level": "HIGH_PROBABILITY_ONLY",
-      "current_price": 23949.25,
+      "current_price": 23976.0,
       "expiry": "09-Apr-2026",
       "opening_range": {
         "high": 23959.75,
@@ -35,20 +35,20 @@
         "bias_reason": "Market opened near ORB low - prefer CALL signals first"
       },
       "market_context": {
-        "vix": 19.77,
+        "vix": 19.66,
         "vix_safe": true,
         "orb_range_adequate": true,
         "previous_day": {
-          "high": 22998.35,
-          "low": 22542.95,
-          "close": 22968.25,
-          "value_area_high": 22930.04,
-          "value_area_low": 22611.26
+          "high": 23153.85,
+          "low": 22719.3,
+          "close": 23123.65,
+          "value_area_high": 23088.67,
+          "value_area_low": 22784.48
         }
       },
       "signals": [],
       "timestamp": {
-        "local": "2026-04-08 12:31:30",
+        "local": "2026-04-08 13:46:20",
         "local_tz": "IST"
       },
       "message": "No high-quality breakout signals yet"
@@ -58,7 +58,7 @@
       "status": "NO_SIGNALS",
       "total_signals": 0,
       "quality_level": "HIGH_PROBABILITY_ONLY",
-      "current_price": 55381.35,
+      "current_price": 55433.05,
       "expiry": "09-Apr-2026",
       "opening_range": {
         "high": 55276.3,
@@ -68,26 +68,26 @@
         "bias_reason": "Market opened mid-range - no directional bias"
       },
       "market_context": {
-        "vix": 19.77,
+        "vix": 19.66,
         "vix_safe": true,
         "orb_range_adequate": true,
         "previous_day": {
-          "high": 52704.55,
-          "low": 51111.1,
-          "close": 52609.1,
-          "value_area_high": 52465.53,
-          "value_area_low": 51350.12
+          "high": 52778.2,
+          "low": 51868.45,
+          "close": 52716.25,
+          "value_area_high": 52641.74,
+          "value_area_low": 52004.91
         }
       },
       "signals": [],
       "timestamp": {
-        "local": "2026-04-08 12:31:30",
+        "local": "2026-04-08 13:46:20",
         "local_tz": "IST"
       },
       "message": "No high-quality breakout signals yet"
     }
   },
-  "generated_at": "2026-04-08 12:31:30 IST",
+  "generated_at": "2026-04-08 13:46:20 IST",
   "trading_rules": [
     "Rule 1: Only strong breakout candles (60%+ body, volume surge, ATR expansion)",
     "Rule 2: Avoid resistance/support traps (25%+ distance from PDH/PDL)",
