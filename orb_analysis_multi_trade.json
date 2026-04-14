@@ -33,7 +33,7 @@
       "signals": []
     }
   },
-  "generated_at": "2026-04-14 12:57:49 IST",
+  "generated_at": "2026-04-14 14:31:57 IST",
   "trading_rules": [
     "Rule 1: Only strong breakout candles (60%+ body, volume surge, ATR expansion)",
     "Rule 2: Avoid resistance/support traps (25%+ distance from PDH/PDL)",
