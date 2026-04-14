@@ -22,72 +22,18 @@
   "live_signals": {
     "nifty": {
       "index": "NIFTY",
-      "status": "NO_SIGNALS",
-      "total_signals": 0,
-      "quality_level": "HIGH_PROBABILITY_ONLY",
-      "current_price": 23821.85,
-      "expiry": "16-Apr-2026",
-      "opening_range": {
-        "high": 23693.7,
-        "low": 23556.15,
-        "size": 137.55,
-        "open_bias": null,
-        "bias_reason": "Market opened mid-range - no directional bias"
-      },
-      "market_context": {
-        "vix": 18.85,
-        "vix_safe": true,
-        "orb_range_adequate": true,
-        "previous_day": {
-          "high": 24074.05,
-          "low": 23856.35,
-          "close": 24050.6,
-          "value_area_high": 24041.4,
-          "value_area_low": 23889.0
-        }
-      },
-      "signals": [],
-      "timestamp": {
-        "local": "2026-04-13 16:41:19",
-        "local_tz": "IST"
-      },
-      "message": "No high-quality breakout signals yet"
+      "status": "VIX_TOO_HIGH",
+      "message": "India VIX at 20.5 - too high for options buying (need < 20)",
+      "signals": []
     },
     "banknifty": {
       "index": "BANKNIFTY",
-      "status": "NO_SIGNALS",
-      "total_signals": 0,
-      "quality_level": "HIGH_PROBABILITY_ONLY",
-      "current_price": 55559.1,
-      "expiry": "16-Apr-2026",
-      "opening_range": {
-        "high": 54825.55,
-        "low": 54364.5,
-        "size": 461.05,
-        "open_bias": null,
-        "bias_reason": "Market opened mid-range - no directional bias"
-      },
-      "market_context": {
-        "vix": 18.85,
-        "vix_safe": true,
-        "orb_range_adequate": true,
-        "previous_day": {
-          "high": 55978.5,
-          "low": 55145.25,
-          "close": 55912.75,
-          "value_area_high": 55853.51,
-          "value_area_low": 55270.24
-        }
-      },
-      "signals": [],
-      "timestamp": {
-        "local": "2026-04-13 16:41:19",
-        "local_tz": "IST"
-      },
-      "message": "No high-quality breakout signals yet"
+      "status": "VIX_TOO_HIGH",
+      "message": "India VIX at 20.5 - too high for options buying (need < 20)",
+      "signals": []
     }
   },
-  "generated_at": "2026-04-13 16:41:19 IST",
+  "generated_at": "2026-04-14 11:19:03 IST",
   "trading_rules": [
     "Rule 1: Only strong breakout candles (60%+ body, volume surge, ATR expansion)",
     "Rule 2: Avoid resistance/support traps (25%+ distance from PDH/PDL)",
